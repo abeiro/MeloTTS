@@ -13,16 +13,16 @@ models = {
     'EN': TTS(language='EN', device=device)
 }
 
-ckpt_path = "data/SkyrimVoices/G_10000.pth"
+ckpt_path = "data/SkyrimLikeVoices/checkpoint.pth"
 custom_config_path = os.path.join(os.path.dirname(ckpt_path), 'config.json')
 model_custom = TTS(language='EN', config_path=custom_config_path, ckpt_path=ckpt_path, device=device)
 
 # Add the custom model to the dictionary
-models['SkyrimVoices'] = model_custom
+models['SkyrimLikeVoices'] = model_custom
 
 # Speaker IDs for each language
-speaker_ids = models['SkyrimVoices'].hps.data.spk2id
-print(speaker_ids.keys())
+speaker_ids = models['SkyrimLikeVoices'].hps.data.spk2id
+# print(speaker_ids.keys())
 # Function to synthesize the speech
 def synthesize(speaker, text, speed, language):
     try:
@@ -30,9 +30,9 @@ def synthesize(speaker, text, speed, language):
         bio = io.BytesIO()
         
         # Run TTS
-        models['SkyrimVoices'].tts_to_file(
+        models['SkyrimLikeVoices'].tts_to_file(
             text,
-            models['SkyrimVoices'].hps.data.spk2id[speaker],
+            models['SkyrimLikeVoices'].hps.data.spk2id[speaker],
             bio,
             speed=speed,
             format='wav'
@@ -59,7 +59,7 @@ async def get_speaker_id_list():
 @restapi.post("/tts")
 async def tts(speaker: str, text: str, speed: float = 1.0, language: str = 'EN'):
     
-    if speaker not in models['SkyrimVoices'].hps.data.spk2id:
+    if speaker not in models['SkyrimLikeVoices'].hps.data.spk2id:
         raise HTTPException(status_code=400, detail="Invalid speaker specified")
     
     audio = synthesize(speaker, text, speed, 'EN')
