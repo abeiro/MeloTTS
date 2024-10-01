@@ -42,6 +42,16 @@ class TTSRequest(BaseModel):
     speed: float = 1.0
     language: str = 'EN'
 
+
+async def audio_streamer(audio_data: io.BytesIO):
+    # Define a chunk size
+    chunk_size = 1024 * 256  # 256 KiB chunks
+    while True:
+        chunk = audio_data.read(chunk_size)
+        if not chunk:
+            break
+        yield chunk
+        
 # Function to synthesize the speech
 def synthesize(speaker, text, speed, language):
     try:
@@ -78,10 +88,12 @@ async def get_speaker_id_list():
 @restapi.post("/tts")
 async def tts(request: TTSRequest):
     
+    start_time = time.time()
     if request.speaker not in models['SkyrimLikeVoices'].hps.data.spk2id:
         raise HTTPException(status_code=400, detail="Invalid speaker specified")
     
     audio = synthesize(request.speaker, request.text, request.speed, request.language)
-
+    end_time = time.time()
+    print(f"Request completed in {end_time - start_time:.2f} seconds.")
     # Return the audio as a stream response
-    return StreamingResponse(audio, media_type="audio/wav")
+    return StreamingResponse(audio_streamer(audio), media_type="audio/wav")
