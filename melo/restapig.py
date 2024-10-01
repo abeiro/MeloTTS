@@ -79,13 +79,3 @@ async def tts(speaker: str, text: str, speed: float = 1.0, language: str = 'EN')
     return StreamingResponse(audio, media_type="audio/wav")
 
 
-@restapi.get("/tts")
-async def tts(speaker: str, text: str, speed: float = 1.0, language: str = 'EN'):
-    
-    if speaker not in models['SkyrimLikeVoices'].hps.data.spk2id:
-        raise HTTPException(status_code=400, detail="Invalid speaker specified")
-    
-    audio = synthesize(speaker, text, speed, 'EN')
-
-    # Return the audio as a stream response
-    return StreamingResponse(audio, media_type="audio/wav")
