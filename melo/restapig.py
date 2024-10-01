@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse, JSONResponse
+from pydantic import BaseModel
 import os, torch, io
 from melo.api import TTS
 import time
@@ -33,6 +34,13 @@ models = {
 
 # Speaker IDs for each language
 speaker_ids = models['SkyrimLikeVoices'].hps.data.spk2id
+
+# Pydantic model for request body
+class TTSRequest(BaseModel):
+    speaker: str
+    text: str
+    speed: float = 1.0
+    language: str = 'EN'
 
 # Function to synthesize the speech
 def synthesize(speaker, text, speed, language):
@@ -68,14 +76,12 @@ async def get_speaker_id_list():
 
 # Endpoint to generate TTS audio
 @restapi.post("/tts")
-async def tts(speaker: str, text: str, speed: float = 1.0, language: str = 'EN'):
+async def tts(request: TTSRequest):
     
-    if speaker not in models['SkyrimLikeVoices'].hps.data.spk2id:
+    if request.speaker not in models['SkyrimLikeVoices'].hps.data.spk2id:
         raise HTTPException(status_code=400, detail="Invalid speaker specified")
     
-    audio = synthesize(speaker, text, speed, 'EN')
+    audio = synthesize(request.speaker, request.text, request.speed, request.language)
 
     # Return the audio as a stream response
     return StreamingResponse(audio, media_type="audio/wav")
-
-
