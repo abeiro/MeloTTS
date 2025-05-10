@@ -1,21 +1,22 @@
 #!/bin/bash
 clear
 cat << EOF
-MeloTTS
+Melo-TTS
 
-This will install MeloTTS. This is a fast TTS that can be run on a potato using either GPU or CPU.
+This will install Melo-TTS. This is a fast TTS that can be run on a potato using either GPU or CPU.
 
+Melo-TTS will use a custom model with predefined Skyrim-like voices.
+
+Options: 
 * Choose CPU if you have an AMD GPU.
-* Choose GPU if you have a Nvidia GPU that is powerful enough to handle both Skyrim and MeloTTS
-
-MeloTTS will use a custom model with Skyrim-like voices. Does NOT support wav uploading.
+* Choose GPU if you have a Nvidia GPU that is powerful enough to handle both Skyrim and Melo-TTS
 
 If you are not sure use CPU.
 
 EOF
 
 if [ ! -d /home/dwemer/python-melotts ]; then
-	exit "MeloTTS not installed"
+	exit "Melo-TTS not installed"
 fi
 
 mapfile -t files < <(find /home/dwemer/MeloTTS/ -name "start-*.sh")
