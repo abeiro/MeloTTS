@@ -4,12 +4,11 @@ cat << EOF
 Melo-TTS
 
 This will install Melo-TTS. This is a fast TTS that can be run on a potato using either GPU or CPU.
-
 Melo-TTS will use a custom model with predefined Skyrim-like voices.
 
 Options: 
-* Choose CPU if you have an AMD GPU.
-* Choose GPU if you have a Nvidia GPU that is powerful enough to handle both Skyrim and Melo-TTS
+* CPU = Recommended for an AMD GPU.
+* GPU = Recommended for an Nvidia GPU.
 
 If you are not sure use CPU.
 
